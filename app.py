@@ -3,6 +3,7 @@ from werkzeug.exceptions import abort
 from flask import Flask, render_template
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'blaGoneMadwith8456'
 
 
 def get_db_connection():
@@ -23,6 +24,11 @@ def index():
 def post(post_id):
     post = get_post(post_id)
     return render_template('post.html', post=post)
+
+
+@app.route('/create', methods=('GET', 'POST'))
+def create():
+    return render_template('create.html')
 
 
 def get_post(post_id):
