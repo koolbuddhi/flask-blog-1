@@ -1,6 +1,6 @@
 import sqlite3
 from werkzeug.exceptions import abort
-from flask import Flask, render_template
+from flask import Flask, flash, redirect, render_template, request, url_for
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'blaGoneMadwith8456'
@@ -28,6 +28,19 @@ def post(post_id):
 
 @app.route('/create', methods=('GET', 'POST'))
 def create():
+    if request.method == 'POST':
+        title = request.form['title']
+        content = request.form['content']
+
+        if not title:
+            flash('Title is required!')
+        else:
+            conn = get_db_connection()
+            conn.execute('INSERT INTO posts (title, content) VALUES (?, ?)',
+                         (title, content))
+            conn.commit()
+            conn.close()
+            return redirect(url_for('index'))
     return render_template('create.html')
 
 
